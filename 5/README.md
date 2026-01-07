@@ -44,6 +44,7 @@ docker run -d \
 ```
 
 я выполнил команды и получил:
+```
 pvn@asusA17:~/Lesson/5$ docker ps
 CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                 NAMES
 5f44fdfd0154   mysql:8.4.0   "docker-entrypoint.s…"   14 seconds ago   Up 13 seconds   3306/tcp, 33060/tcp   mysql_1
@@ -101,11 +102,12 @@ Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skippin
 2026-01-07T11:58:06.082311Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
 2026-01-07T11:58:06.100861Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.4.0'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
 2026-01-07T11:58:06.418312Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
-
+```
 судя по логая все прошло успешно.
 Далее через команду docker проверил таблицы:
-
+```
 pvn@asusA17:~/Lesson/5$ docker exec mysql_1 mysql -u user -ptest demo -e "SHOW TABLES;"
 mysql: [Warning] Using a password on the command line interface can be insecure.
 Tables_in_demo
 task
+```
