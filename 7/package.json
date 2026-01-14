@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-	"dev": "VITE_NODE_VERSION=$(node -v) vite --host",
-	"build": "VITE_NODE_VERSION=$(node -v) vite build",
+	"dev": "VITE_NODE_VERSION=$(node -v) vite public --host",
+	"build": "VITE_NODE_VERSION=$(node -v) vite build  public --outDir ../dist --emptyOutDir",
     "preview": "vite preview"
   },
   "dependencies": {

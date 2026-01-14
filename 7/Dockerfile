@@ -10,7 +10,6 @@ RUN chown node:node /app
 
 USER node
 
-# Копируем package.json из папки app (на хосте) в текущую директорию /app (в контейнере)
 COPY --chown=node:node package*.json ./
 RUN npm install
 
@@ -24,24 +23,18 @@ CMD ["npm", "run", "dev", "--", "--host"]
 
 # Этап 2 - build
 FROM development AS build
-# Здесь файлы лежат в /app, команда создаст /app/dist
+
 RUN npm run build
 
+# Этап 3: production (с использованием Nginx)
+FROM nginx:alpine AS production-nginx
 
-# Этап 3 - production
-FROM ${NODE_VERSION} AS production
+# Скопируйте ваш nginx.conf файл из хост-машины в контейнер
+COPY virtual_host.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /var/www
+# Скопируйте собранное приложение из этапа build 
+# Теперь мы знаем, что оно будет в /app/dist благодаря измененному package.json
+COPY --from=build /app/dist /var/www
 
-RUN npm install -g serve
-
-# ИСПРАВЛЕНО: Копируем из /app/dist, так как WORKDIR на этапе build был /app
-COPY --from=build /app/dist .
-
-RUN chown -R node:node /var/www
-
-USER node
-
-EXPOSE 5173
-
-CMD ["serve", "-s", "-p", "5173", "."]
+# Открываем порт 80
+EXPOSE 80
