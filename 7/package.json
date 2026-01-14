@@ -1,0 +1,14 @@
+{
+  "name": "my-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+	"dev": "VITE_NODE_VERSION=$(node -v) vite --host",
+	"build": "VITE_NODE_VERSION=$(node -v) vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vite": "^5.0.0"
+  }
+}
