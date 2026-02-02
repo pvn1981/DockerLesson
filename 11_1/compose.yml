@@ -1,0 +1,62 @@
+name: wordpress_homework
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    networks:
+      - private-tier
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+
+  wp:
+    image: wordpress:6.5-php8.3-fpm
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - private-tier
+    volumes:
+      - wpdata:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+
+  nginx:
+    image: nginx:1.27-bookworm
+    restart: unless-stopped
+    depends_on:
+      - wp
+    ports:
+      - "80:80"
+    networks:
+      - private-tier
+      - public-tier
+    volumes:
+      - wpdata:/var/www/html:ro
+    configs:
+      - source: nginx_default
+        target: /etc/nginx/conf.d/default.conf
+
+volumes:
+  wpdata:
+  dbdata:
+
+configs:
+  nginx_default:
+    file: ./docker/nginx/default.conf
+
+networks:
+  public-tier:
+    driver: bridge
+  private-tier:
+    driver: bridge
+    internal: true
